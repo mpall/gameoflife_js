@@ -45,7 +45,6 @@ var gol = (function(){
 	    	this.position = position;
 	    
 	    	this.nw = function(){
-	    		console.log("YYYYYYYYYY" + this.grid)
 	    		return this.position - (this.grid.getHightAndWidth() + 1)
 	    	}
 	    	this.n = function(){
@@ -205,11 +204,11 @@ var gol = (function(){
 		
 
 
-		var EastEdgeCellFactory = function(grid,position){
+		var EastCellFactory = function(grid,position){
 	    	this.grid = grid;
 	    	this.position = position;
 	    }
-		EastEdgeCellFactory.prototype = extendfunc(CellCalc, function(){
+		EastCellFactory.prototype = extendfunc(CellCalc, function(){
 			this.ne = function() {
 				return this.position 
 					- (this.grid.getHightAndWidth() * 2) + 1;
@@ -222,11 +221,11 @@ var gol = (function(){
 				return this.position + 1;
 			}
 		});
-		var NorthEdgeCellFactory = function(grid, position){
+		var NorthCellFactory = function(grid, position){
 	    	this.grid = grid;
 	    	this.position = position;
 	    }
-		NorthEdgeCellFactory.prototype = extendfunc(CellCalc, function(){
+		NorthCellFactory.prototype = extendfunc(CellCalc, function(){
 			this.nw = function() {
 				return this.position 
 					+ (this.grid.getHightAndWidth() 
@@ -245,11 +244,11 @@ var gol = (function(){
 							+ 1;
 			}	
 		});
-		var SouthEdgeCellFactory = function(grid, position){
+		var SouthCellFactory = function(grid, position){
 	    	this.grid = grid;
 	    	this.position = position;
 	    }
-		SouthEdgeCellFactory.prototype = extendfunc(CellCalc, function(){
+		SouthCellFactory.prototype = extendfunc(CellCalc, function(){
 			this.sw = function() {
 				return this.position
 					- (this.grid.getHightAndWidth() 
@@ -289,13 +288,13 @@ var gol = (function(){
 		return {
         	createCellFactoryBase: function(grid, position){return new CellFactoryBase(grid, position)},
         	createNorthWestCellFactory: function(grid, position){return new NorthWestCellFactory(grid, position)},
-        	createNorthCellFactory: function(grid, position){return new NorthEdgeCellFactory(grid, position)},
+        	createNorthCellFactory: function(grid, position){return new NorthCellFactory(grid, position)},
         	createNorthEastCellFactory: function(grid, position){return new NorthEastCellFactory(grid, position)},
-        	createEastCellFactory: function(grid, position){return new EastEdgeCellFactory(grid, position)},
+        	createEastCellFactory: function(grid, position){return new EastCellFactory(grid, position)},
         	createSouthWestCellFactory: function(grid, position){return new SouthWestCellFactory(grid, position)},
-        	createSouthCellFactory: function(grid, position){return new SouthEdgeCellFactory(grid, position)},
+        	createSouthCellFactory: function(grid, position){return new SouthCellFactory(grid, position)},
         	createSouthEastCellFactory: function(grid, position){return new SouthEastCellFactory(grid, position)},
-        	createWestEdgeCellFactory: function(grid, position){return new WestCellFactory(grid, position)},
+        	createWestCellFactory: function(grid, position){return new WestCellFactory(grid, position)},
         	createCellFactory: function(grid, position){return new CellFactoryBuilder(grid, position).getCellFactory()}
     	};
 	})();
@@ -322,21 +321,21 @@ var gol = (function(){
 			return this.position == (this.grid.getHightAndWidth() - 1);
 		}
 
-		this.wEdge = function() {
+		this.w = function() {
 			return (this.position % this.grid.getHightAndWidth()) == 0 && !this.nwCorner()
 					&& !this.swCorner();
 		}
 
-		this.nEdge = function() {
+		this.n = function() {
 			return this.position < this.grid.getHightAndWidth() && !this.nwCorner() && !this.seCorner();
 		}
 
-		this.eEdge = function() {
+		this.e = function() {
 			return ((this.position - this.grid.getHightAndWidth() + 1) % this.grid.getHightAndWidth()) == 0
 					&& !this.neCorner() && !this.seCorner();
 		}
 
-		this.sEdge = function() {
+		this.s = function() {
 			return this.position > (this.grid.size() - this.grid.getHightAndWidth()) && !this.seCorner()
 					&& !this.swCorner();
 		}
@@ -346,8 +345,6 @@ var gol = (function(){
     	this.getCellFactory = function(){
     		var cellFactory;
 
-    		console.log("South East: " + this.seCorner())
-
 			if(this.nwCorner()) {
 				cellFactory = fb.createNorthWestCellFactory(grid, position);
 			}else if(this.neCorner()) {
@@ -356,14 +353,14 @@ var gol = (function(){
 				cellFactory = fb.createSouthWestCellFactory(grid, position);
 			}else if(this.seCorner()) {
 				cellFactory = fb.createSouthEastCellFactory(grid, position);
-			}else if(this.eEdge()) {
+			}else if(this.e()) {
 				cellFactory = fb.createEastCellFactory(grid,position);
-			}else if(this.nEdge()) {
+			}else if(this.n()) {
 				cellFactory = fb.createNorthCellFactory(grid, position);
-			}else if(this.sEdge()) {
+			}else if(this.s()) {
 				cellFactory = fb.createSouthCellFactory(grid, position);
-			}else if(this.wEdge()) {
-				cellFactory = fb.createWestEdgeCellFactory(grid, position);
+			}else if(this.w()) {
+				cellFactory = fb.createWestCellFactory(grid, position);
 			}else {
 				cellFactory = fb.createCellFactoryBase(grid,position);
 			}

@@ -2,7 +2,6 @@ describe('Cell Factory', function(){
     parameterized = function(desc, expected, factory){
         describe("Testing (" + desc + ") position (" + expected[4] + ")", function(){
             it("Cell factory", function(){
-                console.log("XXXXXXXXXXX" + gol.createGrid(4).getHightAndWidth())
                 expect(factory.nw()).toBe(expected[0]);
                 expect(factory.n()).toBe(expected[1]);
                 expect(factory.ne()).toBe(expected[2]);
