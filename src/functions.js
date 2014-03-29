@@ -36,6 +36,14 @@ var gol = (function(){
         this.size = function(){
         	return hightAndWidth * hightAndWidth;
         }
+
+        this.initialiseFalseStateArray = function(){
+			var a = new Array(hightAndWidth * hightAndWidth);
+			for(var i = 0; i < a.length; i++){		
+				a[i] = false;
+			}
+			return a;
+	    }
     };
 
     var fb = (function(){

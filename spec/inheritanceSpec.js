@@ -16,7 +16,6 @@ describe("Inheritance", function(){
 		var s = new Sub();
 
 		for(x in s){
-			console.log("TEST: " + x)
 			c[x]=s[x]
 		}
 
