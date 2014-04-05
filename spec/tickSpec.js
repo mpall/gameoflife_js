@@ -1,17 +1,19 @@
 describe("Ticking", function(){
+	var currentState, indexGrid, ticker;
+
+	beforeEach(function(){
+		currentState = gol.createGrid(4).initialiseFalseStateArray();
+		indexGrid = gol.createGrid(4).initialiseCells();
+		ticker = gol.createTicker();
+	})
+
 	it("Initiaise empty array", function(){
-		
-		var currentState = gol.createGrid(4).initialiseFalseStateArray();
 		expect(currentState[0]).toBe(false);
 		expect(currentState[15]).toBe(false);
 		expect(currentState[16]).toBe(undefined);
-
 	});
 
 	it("Start with nothing, end with nothing", function(){
-		var indexGrid = gol.createGrid(4).initialiseCells();
-		var currentState = indexGrid.initialiseFalseStateArray();
-		var ticker = gol.createTicker();
 		var nextState = ticker.tick(currentState, indexGrid);
 		expect(nextState.length).toBe(16);
 		for(var i = 0; i < nextState.length; i++){
@@ -20,9 +22,6 @@ describe("Ticking", function(){
 	});
 
 	it("Under population results in death. Less than 2 neibouring cells", function(){
-		var indexGrid = gol.createGrid(4).initialiseCells();
-		var currentState = indexGrid.initialiseFalseStateArray();
-		ticker = gol.createTicker();
 		var underTest = 0;	
 		var neighbough = 1;
 		currentState[underTest] = true;
@@ -31,43 +30,59 @@ describe("Ticking", function(){
 		expect(nextState[underTest]).toBe(false);
 	});
 
-	it("Current cell is alive", function(){
-		var ticker = gol.createTicker();
-		var indexGrid = gol.createGrid(4).initialiseCells();
-		var currentState = indexGrid.initialiseFalseStateArray();
-		currentState[2] = true;
-		var alive = ticker.isAlive(currentState, 2);
-		expect(alive).toBe(true);
-	});
-
-	it("Has two neighboughs so should stay alive", function(){
-		var ticker = gol.createTicker();
-		var indexGrid = gol.createGrid(4).initialiseCells();
-		var currentState = indexGrid.initialiseFalseStateArray();
+	
+	it("Just right. 2 neibouring cells", function(){
 		var underTest = 0;	
 		var neighbough1 = 1;
 		var neighbough2 = 4;
 		currentState[underTest] = true;
 		currentState[neighbough1] = true;
 		currentState[neighbough2] = true;
-		console.log("curere: " + currentState)
-		var twoNeibours = ticker.hasTwoNeiboughs(currentState, indexGrid, underTest);
-		expect(twoNeibours).toBe(true);
+		var nextState = ticker.tick(currentState, indexGrid);		
+		expect(nextState[underTest]).toBe(true);
 	});
 
-	// it("Just right. 2 neibouring cells", function(){
-	// 	var indexGrid = gol.createGrid(4).initialiseCells();
-	// 	var currentState = indexGrid.initialiseFalseStateArray();
-	// 	ticker = gol.createTicker();
-	// 	var underTest = 0;	
-	// 	var neighbough1 = 1;
-	// 	var neighbough2 = 4;
-	// 	currentState[underTest] = true;
-	// 	currentState[neighbough1] = true;
-	// 	currentState[neighbough2] = true;
-	// 	var nextState = ticker.tick(currentState, indexGrid);		
-	// 	expect(nextState[underTest]).toBe(true);
-	// });
+	it("Just right. 3 neibouring cells", function(){
+		var underTest = 0;	
+		var neighbough1 = 1;
+		var neighbough2 = 4;
+		var neighbough3 = 5;
+		currentState[underTest] = true;
+		currentState[neighbough1] = true;
+		currentState[neighbough2] = true;
+		currentState[neighbough3] = true;
+		var nextState = ticker.tick(currentState, indexGrid);		
+		expect(nextState[underTest]).toBe(true);
+	});
+
+	it("Overcrowed. > 3 neibouring cells", function(){
+		var underTest = 0;	
+		var neighbough1 = 1;
+		var neighbough2 = 4;
+		var neighbough3 = 5;
+		var neighbough4 = 7;
+		currentState[underTest] = true;
+		currentState[neighbough1] = true;
+		currentState[neighbough2] = true;
+		currentState[neighbough3] = true;
+		currentState[neighbough4] = true;
+		var nextState = ticker.tick(currentState, indexGrid);		
+		expect(nextState[underTest]).toBe(false);
+	});
+
+	it("Dead cell with 3 live neighboughs becomes alive", function(){
+		var underTest = 0;	
+		var neighbough1 = 1;
+		var neighbough2 = 4;
+		var neighbough3 = 5;
+		var neighbough4 = 7;
+		currentState[underTest] = false;
+		currentState[neighbough1] = true;
+		currentState[neighbough2] = true;
+		currentState[neighbough3] = true;
+		var nextState = ticker.tick(currentState, indexGrid);		
+		expect(nextState[underTest]).toBe(true);
+	});
 
 
 ///

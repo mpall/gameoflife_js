@@ -12,7 +12,6 @@ var gol = (function(){
     	this.neighboursCount = function(currentState){
     		var count = 0;
     		for (var i = this.neighbours.length - 1; i >= 0; i--) {
-    			console.log(this.neighbours[i] + ": " + i + " :" + currentState[this.neighbours[i]])
     			if(currentState[this.neighbours[i]]){
     				count++;
     			}
@@ -23,39 +22,54 @@ var gol = (function(){
 
     var Ticker = function(){
     	this.tick = function(currentState, indexGrid){
+    		var LifeCalc = function(cS, iG){
+    			this.currentState = cS;
+    			this.indexGrid = iG;
+    			this.isAlive = function(index){
+		    		return this.currentState[index];
+		    	}
+		    	this.liveToNextGeneration = function(index){
+		    		var count = this.neighboursCount(index);
+		    		if(count == 2 || count == 3){
+		    			return true;
+		    		} else {
+		    			return false;
+		    		}
+		    	}
+		    	this.shouldLiveAgain = function(index){
+		    		if(this.neighboursCount(index) == 3){
+		    			return true;
+		    		} else {
+		    			return false;
+		    		}
+		    	}
+		    	this.neighboursCount = function(index){
+		    		return this.indexGrid.getData(index).neighboursCount(this.currentState);
+		    	}
+    		}
+    		var life = new LifeCalc(currentState, indexGrid);
+
     		var nextState = new Array(currentState.length);
     		for(var i = 0; i < currentState.length; i++){
-    			if(currentState[i] == true){
-    				console.log("Count: " + indexGrid.getData(i).neighboursCount(currentState))
-    				if(indexGrid.getData(i).neighboursCount(currentState) == 2){
-    					console.log("set next state " + i + "to true")
+    			if(life.isAlive(i)){
+    				if(life.liveToNextGeneration(i)){
     					nextState[i] = true;
     				} else {
-    					console.log("False")
     					nextState[i] = false;
     				}	
     			} else {
-    				console.log("False")
-    				nextState[i] = false;	
+    				if(life.shouldLiveAgain(i)){
+    					nextState[i] = true; 
+    				} else {
+    					nextState[i] = false;		
+    				}
     			}
     			
     		}
     		return nextState;
     	}
 
-    	this.isAlive = function(currentState, index){
-    		return currentState[index];
-    	}
-
-    	this.hasTwoNeiboughs = function(currentState, indexGrid, index){
-    		console.log("index:: " + index)
-    		console.log("TEST  :: " + indexGrid.getData(index).neighboursCount(currentState))
-    		if(indexGrid.getData(index).neighboursCount(currentState) == 2){
-    			return true;
-    		} else {
-    			return false;
-    		}
-    	}
+    	
     }
 
     var Grid = function(hightAndWidth){
