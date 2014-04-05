@@ -9,13 +9,46 @@ var gol = (function(){
     	this.neighboursIndexes = function(){
     		return neighbours;
     	}
+    	this.neighboursCount = function(){
+    		var count = 0;
+    		for (var i = this.neighbours.length - 1; i >= 0; i--) {
+    			if(this.neighbours[i]){
+    				count++;
+    			}
+    		};
+    		return count;
+    	}
     };
+
+    var Ticker = function(){
+    	this.tick = function(currentState, indexGrid){
+    		var nextState = new Array(currentState.length);
+    		for(var i = 0; i < currentState.length; i++){
+    			if(currentState[i] == true){
+    				console.log("HERE1: " + indexGrid);
+    				console.log("HERE21: " + indexGrid.getData);
+    				console.log("HERE22: " + indexGrid.getData());
+    				console.log("HERE23: " + indexGrid.getData(i));
+    				for(var prop in indexGrid.getData(i)){
+    					console.log("prop: " + prop);
+    				}
+    				
+    				console.log("HERE3: " + indexGrid.getData(i).neighboursCount());
+    				if(indexGrid.getData(i).neighboursCount() == 2){
+    					nextState[i] = true;
+    				}	
+    			}
+    			nextState[i] = false;
+    		}
+    		return nextState;
+    	}
+    }
 
     var Grid = function(hightAndWidth){
         this.hightAndWidth = hightAndWidth;
         this.data = new Array(hightAndWidth * hightAndWidth);
 
-
+        
 
         this.getHightAndWidth = function(){
             return this.hightAndWidth;
@@ -30,12 +63,20 @@ var gol = (function(){
         }
 
         this.getData = function(index){
+        	console.log("TEST : " + this.data);
         	return this.data[index];
         }
 
         this.size = function(){
         	return hightAndWidth * hightAndWidth;
         }
+
+        this.initialiseCells = function(){
+			for(var i = 0; i < this.data.length; i++){
+    	    	this.data[i] = fb.createCellFactory(this, i)
+        	}
+        	return this;
+	    }
 
         this.initialiseFalseStateArray = function(){
 			var a = new Array(hightAndWidth * hightAndWidth);
@@ -382,6 +423,7 @@ var gol = (function(){
 
     return {
         createGrid: function(hightAndWidth){return new Grid(hightAndWidth)},
-        createCellFactory: function(grid, position){return new CellFactoryBuilder(grid, position).getCellFactory()}
+        createCellFactory: function(grid, position){return new CellFactoryBuilder(grid, position).getCellFactory()},
+        createTicker: function(){return new Ticker()}
     };
 })();
