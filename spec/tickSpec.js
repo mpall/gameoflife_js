@@ -31,19 +31,43 @@ describe("Ticking", function(){
 		expect(nextState[underTest]).toBe(false);
 	});
 
-	it("Just right. 2 neibouring cells", function(){
+	it("Current cell is alive", function(){
+		var ticker = gol.createTicker();
 		var indexGrid = gol.createGrid(4).initialiseCells();
 		var currentState = indexGrid.initialiseFalseStateArray();
-		ticker = gol.createTicker();
+		currentState[2] = true;
+		var alive = ticker.isAlive(currentState, 2);
+		expect(alive).toBe(true);
+	});
+
+	it("Has two neighboughs so should stay alive", function(){
+		var ticker = gol.createTicker();
+		var indexGrid = gol.createGrid(4).initialiseCells();
+		var currentState = indexGrid.initialiseFalseStateArray();
 		var underTest = 0;	
 		var neighbough1 = 1;
 		var neighbough2 = 4;
 		currentState[underTest] = true;
 		currentState[neighbough1] = true;
 		currentState[neighbough2] = true;
-		var nextState = ticker.tick(currentState, indexGrid);		
-		expect(nextState[underTest]).toBe(true);
+		console.log("curere: " + currentState)
+		var twoNeibours = ticker.hasTwoNeiboughs(currentState, indexGrid, underTest);
+		expect(twoNeibours).toBe(true);
 	});
+
+	// it("Just right. 2 neibouring cells", function(){
+	// 	var indexGrid = gol.createGrid(4).initialiseCells();
+	// 	var currentState = indexGrid.initialiseFalseStateArray();
+	// 	ticker = gol.createTicker();
+	// 	var underTest = 0;	
+	// 	var neighbough1 = 1;
+	// 	var neighbough2 = 4;
+	// 	currentState[underTest] = true;
+	// 	currentState[neighbough1] = true;
+	// 	currentState[neighbough2] = true;
+	// 	var nextState = ticker.tick(currentState, indexGrid);		
+	// 	expect(nextState[underTest]).toBe(true);
+	// });
 
 
 ///

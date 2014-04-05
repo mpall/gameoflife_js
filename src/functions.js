@@ -2,17 +2,18 @@
 var gol = (function(){
 	var Cell = function(nw, n, ne, w, position, e, sw, s, se){
      this.position = position;
-    	this.neighbours = [nw,n,ne,w,e,sw,w,se]
+    	this.neighbours = [nw,n,ne,w,e,sw,s,se]
     	this.getPosition = function(){
     		return this.position;
     	}
     	this.neighboursIndexes = function(){
     		return neighbours;
     	}
-    	this.neighboursCount = function(){
+    	this.neighboursCount = function(currentState){
     		var count = 0;
     		for (var i = this.neighbours.length - 1; i >= 0; i--) {
-    			if(this.neighbours[i]){
+    			console.log(this.neighbours[i] + ": " + i + " :" + currentState[this.neighbours[i]])
+    			if(currentState[this.neighbours[i]]){
     				count++;
     			}
     		};
@@ -25,22 +26,35 @@ var gol = (function(){
     		var nextState = new Array(currentState.length);
     		for(var i = 0; i < currentState.length; i++){
     			if(currentState[i] == true){
-    				console.log("HERE1: " + indexGrid);
-    				console.log("HERE21: " + indexGrid.getData);
-    				console.log("HERE22: " + indexGrid.getData());
-    				console.log("HERE23: " + indexGrid.getData(i));
-    				for(var prop in indexGrid.getData(i)){
-    					console.log("prop: " + prop);
-    				}
-    				
-    				console.log("HERE3: " + indexGrid.getData(i).neighboursCount());
-    				if(indexGrid.getData(i).neighboursCount() == 2){
+    				console.log("Count: " + indexGrid.getData(i).neighboursCount(currentState))
+    				if(indexGrid.getData(i).neighboursCount(currentState) == 2){
+    					console.log("set next state " + i + "to true")
     					nextState[i] = true;
+    				} else {
+    					console.log("False")
+    					nextState[i] = false;
     				}	
+    			} else {
+    				console.log("False")
+    				nextState[i] = false;	
     			}
-    			nextState[i] = false;
+    			
     		}
     		return nextState;
+    	}
+
+    	this.isAlive = function(currentState, index){
+    		return currentState[index];
+    	}
+
+    	this.hasTwoNeiboughs = function(currentState, indexGrid, index){
+    		console.log("index:: " + index)
+    		console.log("TEST  :: " + indexGrid.getData(index).neighboursCount(currentState))
+    		if(indexGrid.getData(index).neighboursCount(currentState) == 2){
+    			return true;
+    		} else {
+    			return false;
+    		}
     	}
     }
 
@@ -63,7 +77,6 @@ var gol = (function(){
         }
 
         this.getData = function(index){
-        	console.log("TEST : " + this.data);
         	return this.data[index];
         }
 
@@ -73,7 +86,7 @@ var gol = (function(){
 
         this.initialiseCells = function(){
 			for(var i = 0; i < this.data.length; i++){
-    	    	this.data[i] = fb.createCellFactory(this, i)
+    	    	this.data[i] = new CellFactoryBuilder(this, i).getCellFactory().getCell();
         	}
         	return this;
 	    }
@@ -344,7 +357,6 @@ var gol = (function(){
         	createSouthCellFactory: function(grid, position){return new SouthCellFactory(grid, position)},
         	createSouthEastCellFactory: function(grid, position){return new SouthEastCellFactory(grid, position)},
         	createWestCellFactory: function(grid, position){return new WestCellFactory(grid, position)},
-        	createCellFactory: function(grid, position){return new CellFactoryBuilder(grid, position).getCellFactory()}
     	};
 	})();
 
