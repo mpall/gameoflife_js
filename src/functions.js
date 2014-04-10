@@ -453,3 +453,29 @@ var gol = (function(){
         createTicker: function(){return new Ticker()}
     };
 })();
+
+var gol2d = (function(){
+	var DrawCanvas = function(ctx){
+		this.ctx = ctx;
+
+		this.draw = function(hight, width, arr){
+			this.ctx.fillStyle = "rgb(200,0,0)";
+			for(var i = 0; i < arr.length; i++){
+				if(arr[i]){
+					var x = i % width;
+					var y = parseInt(i / width, 10);
+					this.ctx.fillRect (x * 10, y * 10, 10, 10);	
+				}
+			}
+		}
+	}
+
+	return {
+		createDrawCanvas: function(ctx){return new DrawCanvas(ctx)}
+	}
+})();
+
+function draw() {
+  	var ctx = document.getElementById('canvasid').getContext('2d');
+	gol2d.createDrawCanvas(ctx).draw(2, 2, [true, false, false, true]);
+}
