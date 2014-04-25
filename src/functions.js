@@ -535,6 +535,22 @@ var gol2d = (function(){
 	}
 })();
 
+var addShapesToArray;
+var animator;
+
+
+function addGlider(){
+	addShapesToArray.glider(getInt("gliderX"),getInt("gliderY"),animator.state);
+}
+
+function addSquare(){
+	addShapesToArray.square(getInt("squareX"),getInt("squareY"),animator.state);
+}
+
+function getInt(str){
+	return 	parseInt(document.getElementById(str).value);
+}
+
 function draw() {
   	var ctx = document.getElementById('canvasid').getContext('2d');
 
@@ -542,7 +558,7 @@ function draw() {
   	var arr = grid.initialiseFalseStateArray()
 	var indexGrid = grid.initialiseCells();
 	var	ticker = gol.createTicker();
-	var addShapesToArray = gol2d.createAddShapesToArray(indexGrid);
+	addShapesToArray = gol2d.createAddShapesToArray(indexGrid);
 	
 	addShapesToArray.square(0,0,arr);
 	addShapesToArray.glider(3,3,arr);
@@ -564,7 +580,7 @@ function draw() {
 
 
 	//controller, initialState, indexGrid, ticker, drawCanvas
-	var animator = gol.createAnimator(controller, 
+	animator = gol.createAnimator(controller, 
 									arr, 
 									indexGrid, 
 									ticker,
