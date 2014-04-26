@@ -552,6 +552,12 @@ function getInt(str){
 }
 
 function draw() {
+	if(animator == null){
+		console.log("First run nothing to stop")
+	} else {
+		clearInterval(animator.interval);
+	}
+
   	var ctx = document.getElementById('canvasid').getContext('2d');
 
 	var grid = gol.createGrid(100)
@@ -576,7 +582,7 @@ function draw() {
 		}
 	}
 
-	var controller = new AnimatorController(250);
+	var controller = new AnimatorController(getInt("milliseconds"));
 
 
 	//controller, initialState, indexGrid, ticker, drawCanvas
